@@ -15,10 +15,15 @@ class Profile extends AbstractResource
      * @return array
      * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\BadStorageException
      */
     public function get(): array
     {
-        return $this->requestGet('/v3/profile');
+        $profile = $this->requestGet('/v3/profile');
+
+        $this->client->storage('user')->setId($profile['id']);
+
+        return $profile;
     }
 
     /**

@@ -5,7 +5,9 @@ declare(strict_types = 1);
 namespace McMatters\FeedlyApi;
 
 use McMatters\FeedlyApi\Exceptions\BadResourceException;
+use McMatters\FeedlyApi\Exceptions\BadStorageException;
 use McMatters\FeedlyApi\Helpers\StringHelper;
+use McMatters\FeedlyApi\Storage\UserStorage;
 use function class_exists, strtolower;
 
 /**
@@ -26,6 +28,11 @@ class FeedlyClient
     protected $resources = [];
 
     /**
+     * @var array
+     */
+    protected $storage = [];
+
+    /**
      * FeedlyClient constructor.
      *
      * @param string $oAuthKey
@@ -33,6 +40,7 @@ class FeedlyClient
     public function __construct(string $oAuthKey)
     {
         $this->oAuthKey = $oAuthKey;
+        $this->setStorage();
     }
 
     /**
@@ -60,5 +68,32 @@ class FeedlyClient
         $this->resources[$lowerCaseName] = new $class($this->oAuthKey, $this);
 
         return $this->resources[$lowerCaseName];
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     * @throws BadStorageException
+     */
+    public function storage(string $name)
+    {
+        $name = strtolower($name);
+
+        if (!isset($this->storage[$name])) {
+            throw new BadStorageException();
+        }
+
+        return $this->storage[$name];
+    }
+
+    /**
+     * @return void
+     */
+    protected function setStorage()
+    {
+        $this->storage = [
+            'user' => new UserStorage($this),
+        ];
     }
 }

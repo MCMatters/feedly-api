@@ -5,8 +5,9 @@ declare(strict_types = 1);
 namespace McMatters\FeedlyApi\Resources;
 
 use InvalidArgumentException;
-use McMatters\FeedlyApi\Helpers\StringHelper;
-use McMatters\FeedlyApi\Helpers\ValidationHelper;
+use McMatters\FeedlyApi\Helpers\{
+    ArrayHelper, StringHelper, ValidationHelper
+};
 use function urlencode;
 
 /**
@@ -20,10 +21,16 @@ class Tag extends AbstractResource
      * @return array
      * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\BadStorageException
      */
     public function list(): array
     {
-        return $this->requestGet('/v3/tags');
+        $tags = $this->requestGet('/v3/tags');
+
+        $tag = ArrayHelper::first($tags);
+        $this->client->storage('user')->setId($tag['id']);
+
+        return $tags;
     }
 
     /**
