@@ -1,5 +1,6 @@
 {
     "name": "mcmatters/feedly-api",
+    "licence": "MIT",
     "authors": [
         {
             "name": "Dmitry Borzyonok",
