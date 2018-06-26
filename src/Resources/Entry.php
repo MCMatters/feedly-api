@@ -4,10 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use InvalidArgumentException;
-use McMatters\FeedlyApi\Helpers\ValidationHelper;
-use function urlencode;
-
 /**
  * Class Entry
  *
@@ -19,29 +15,24 @@ class Entry extends AbstractResource
      * @param string $id
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function getContent(string $id): array
+    public function get(string $id): array
     {
-        $id = urlencode($id);
-
-        return $this->requestGet("/v3/entries/{$id}");
+        return $this->httpClient->get('entries/:id:', [], ['id' => $id]);
     }
 
     /**
      * @param array $ids
      *
      * @return array
-     * @throws InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function getContentForDynamicList(array $ids): array
+    public function getForDynamic(array $ids): array
     {
-        ValidationHelper::checkCountOfArray($ids, 1000, 'entry ids');
-
-        return $this->requestPost('/v3/entries/.mget', $ids);
+        return $this->httpClient->post('entries/.mget', $ids);
     }
 
     /**
@@ -51,9 +42,8 @@ class Entry extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function create(
         string $title,
@@ -61,16 +51,13 @@ class Entry extends AbstractResource
         array $alternate,
         array $data
     ): array {
-        ValidationHelper::checkArrayKeysExistence(
-            $data,
-            ['content', 'summary', 'enclosure']
+        return $this->httpClient->post(
+            'entries',
+            [
+                'title' => $title,
+                'origin' => $origin,
+                'alternate' => $alternate,
+            ] + $data
         );
-
-        $data = array_merge(
-            $data,
-            ['title' => $title, 'origin' => $origin, 'alternate' => $alternate]
-        );
-
-        return $this->requestPost('/v3/entries/', $data);
     }
 }

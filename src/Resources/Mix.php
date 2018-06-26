@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use function urlencode;
-
 /**
  * Class Mix
  *
@@ -18,15 +16,17 @@ class Mix extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getMostEngagingContent(
         string $streamId,
         array $query = []
     ): array {
-        $streamId = urlencode($streamId);
-
-        return $this->requestGet("/v3/mixes/{$streamId}/contents", $query);
+        return $this->httpClient->get(
+            'mixes/:streamId:/contents',
+            $query,
+            ['streamId' => $streamId]
+        );
     }
 }

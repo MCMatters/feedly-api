@@ -4,9 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use McMatters\FeedlyApi\Helpers\StringHelper;
-use function array_filter, urlencode;
-
 /**
  * Class Subscription
  *
@@ -16,12 +13,12 @@ class Subscription extends AbstractResource
 {
     /**
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function list(): array
     {
-        return $this->requestGet('/v3/subscriptions');
+        return $this->httpClient->get('subscriptions');
     }
 
     /**
@@ -30,23 +27,19 @@ class Subscription extends AbstractResource
      * @param array $categories
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function create(
-        string $feedId,
-        string $title = null,
-        array $categories = []
-    ): array {
-        if (!StringHelper::startsWith($feedId, 'feed/')) {
-            $feedId = "feed/{$feedId}";
-        }
-
-        return $this->requestPost('/v3/subscriptions', array_filter([
-            'id'         => $feedId,
-            'title'      => $title,
-            'categories' => $categories,
-        ]));
+    public function create(string $feedId, string $title = null, array $categories = []): array
+    {
+        return $this->httpClient->post(
+            'subscriptions',
+            [
+                'id' => $feedId,
+                'title' => $title,
+                'categories' => $categories,
+            ]
+        );
     }
 
     /**
@@ -54,8 +47,8 @@ class Subscription extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function update(string $feedId, array $data = []): array
     {
@@ -67,43 +60,43 @@ class Subscription extends AbstractResource
     }
 
     /**
-     * @param array $subscriptions
+     * @param array $data
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function updateMultiple(array $subscriptions): array
+    public function updateMultiple(array $data): array
     {
-        return $this->requestPost('/v3/subscriptions/.mput', $subscriptions);
+        return $this->httpClient->post('subscriptions/.mput', $data);
     }
 
     /**
-     * @param string $feedId
+     * @param string $id
      *
      * @return bool
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function delete(string $feedId): bool
+    public function delete(string $id): bool
     {
-        if (!StringHelper::startsWith($feedId, 'feed/')) {
-            $feedId = "feed/{$feedId}";
-        }
-
-        $feedId = urlencode($feedId);
-
-        return $this->requestDelete("/v3/subscriptions/{$feedId}");
+        return $this->httpClient->delete(
+            'subscriptions/:id:',
+            [],
+            ['id' => $id]
+        );
     }
 
     /**
-     * @param array $feedIds
+     * @param array $ids
      *
      * @return bool
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function deleteMultiple(array $feedIds): bool
+    public function deleteMultiple(array $ids): bool
     {
-        return $this->requestDelete(
-            '/v3/subscriptions/.mdelete',
-            ['json' => $feedIds]
+        return $this->httpClient->delete(
+            'subscriptions/.mdelete',
+            ['json' => $ids]
         );
     }
 }

@@ -13,28 +13,23 @@ class Profile extends AbstractResource
 {
     /**
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\BadStorageException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function get(): array
     {
-        $profile = $this->requestGet('/v3/profile');
-
-        $this->client->storage('user')->setId($profile['id']);
-
-        return $profile;
+        return $this->httpClient->get('profile');
     }
 
     /**
      * @param array $data
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function update(array $data): array
     {
-        return $this->requestPost('/v3/profile', $data);
+        return $this->httpClient->post('profile', $data);
     }
 }

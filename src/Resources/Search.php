@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use McMatters\FeedlyApi\Helpers\ValidationHelper;
 use const null;
-use function array_filter, array_merge;
 
 /**
  * Class Search
@@ -17,28 +15,21 @@ class Search extends AbstractResource
 {
     /**
      * @param string $keyword
-     * @param string|null $locale
      * @param int $count
+     * @param string|null $locale
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function searchFeeds(
+    public function findFeeds(
         string $keyword,
-        string $locale = null,
-        int $count = 20
+        int $count = 20,
+        string $locale = null
     ): array {
-        ValidationHelper::checkRequired($keyword);
-
-        return $this->requestGet(
-            '/v3/search/feeds',
-            array_filter([
-                'query'  => $keyword,
-                'count'  => $count,
-                'locale' => $locale,
-            ])
+        return $this->httpClient->get(
+            'search/feeds',
+            ['query' => $keyword, 'count' => $count, 'locale' => $locale]
         );
     }
 
@@ -48,20 +39,18 @@ class Search extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function searchContentOfStream(
         string $streamId,
         string $keyword,
         array $query = []
     ): array {
-        ValidationHelper::checkRequired($keyword);
-
-        return $this->requestGet(
-            "/v3/search/{$streamId}/contents",
-            array_merge($query, ['query' => $keyword])
+        return $this->httpClient->get(
+            'search/:streamId:/contents',
+            ['query' => $keyword] + $query,
+            ['streamId' => $streamId]
         );
     }
 }

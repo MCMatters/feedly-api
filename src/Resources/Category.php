@@ -4,8 +4,7 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use const false;
-use function urlencode;
+use const null;
 
 /**
  * Class Category
@@ -15,18 +14,15 @@ use function urlencode;
 class Category extends AbstractResource
 {
     /**
-     * @param bool $feedlyOrdering
+     * @param string|null $sort
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function list(bool $feedlyOrdering = false): array
+    public function list(string $sort = null): array
     {
-        return $this->requestGet(
-            '/v3/categories',
-            $feedlyOrdering ? ['sort' => 'feedly'] : []
-        );
+        return $this->httpClient->get('categories', ['sort' => $sort]);
     }
 
     /**
@@ -34,25 +30,26 @@ class Category extends AbstractResource
      * @param string $label
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function changeLabel(string $id, string $label): array
     {
-        $id = urlencode($id);
-
-        return $this->requestPost("/v3/categories/{$id}", ['label' => $label]);
+        return $this->httpClient->post(
+            'categories/:id:',
+            ['label' => $label],
+            ['id' => $id]
+        );
     }
 
     /**
      * @param string $id
      *
      * @return bool
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function delete(string $id): bool
     {
-        $id = urlencode($id);
-
-        return $this->requestDelete("/v3/categories/{$id}");
+        return $this->httpClient->delete('categories/:id:', [], ['id' => $id]);
     }
 }

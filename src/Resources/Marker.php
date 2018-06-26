@@ -5,9 +5,8 @@ declare(strict_types = 1);
 namespace McMatters\FeedlyApi\Resources;
 
 use McMatters\FeedlyApi\Helpers\StringHelper;
-use McMatters\FeedlyApi\Helpers\ValidationHelper;
 use const null;
-use function array_filter, is_numeric;
+use function is_numeric;
 
 /**
  * Class Marker
@@ -20,179 +19,218 @@ class Marker extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function listOfUnreadCounts(array $query = []): array
     {
-        return $this->requestGet('/v3/markers/counts', $query);
+        return $this->httpClient->get('markers/counts', $query);
     }
 
     /**
-     * @param string|array $entryIds
+     * @param array|string $entryId
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function markEntryAsRead($entryIds): array
+    public function markEntryAsRead($entryId): array
     {
-        return $this->markAs('markAsRead', 'entries', $entryIds);
+        return $this->markAsRead('entries', $entryId);
     }
 
     /**
-     * @param string|array $entryIds
+     * @param array|string $entryId
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function keepEntryAsUnread($entryIds): array
+    public function keepEntryUnread($entryId): array
     {
-        return $this->markAs('keepUnread', 'entries', $entryIds);
+        return $this->markAs('keepUnread', 'entries', $entryId);
     }
 
     /**
-     * @param string|array $feedIds
-     * @param string|int|null $lastRead
+     * @param array|string $feedId
+     * @param string $lastReadEntryId
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function markFeedAsRead($feedIds, $lastRead = null): array
+    public function markFeedAsRead($feedId, string $lastReadEntryId): array
     {
-        return $this->markAs('markAsRead', 'feeds', $feedIds, $lastRead);
+        return $this->markAsRead('feeds', $feedId, $lastReadEntryId);
     }
 
     /**
-     * @param string|array $categoryIds
-     * @param string|int|null $lastRead
+     * @param array|string $categoryId
+     * @param string $lastReadEntryId
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function markCategoryAsRead($categoryIds, $lastRead = null): array
-    {
-        return $this->markAs('markAsRead', 'categories', $categoryIds, $lastRead);
+    public function markCategoryAsRead(
+        $categoryId,
+        string $lastReadEntryId
+    ): array {
+        return $this->markAsRead('categories', $categoryId, $lastReadEntryId);
     }
 
     /**
-     * @param string|array $tagIds
-     * @param string|int|null $lastRead
+     * @param array|string $tagId
+     * @param string $lastReadEntryId
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function markTagAsRead($tagIds, $lastRead = null): array
+    public function markTagAsRead($tagId, string $lastReadEntryId): array
     {
-        return $this->markAs('markAsRead', 'tags', $tagIds, $lastRead);
+        return $this->markAsRead('tags', $tagId, $lastReadEntryId);
     }
 
     /**
-     * @param string|array $ids
+     * @param array|string $feedId
+     *
+     * @return array
+     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function undoMarkFeedAsRead($feedId): array
+    {
+        return $this->undoMarkAsRead('feeds', $feedId);
+    }
+
+    /**
+     * @param array|string $categoryId
+     *
+     * @return array
+     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function undoMarkCategoryAsRead($categoryId): array
+    {
+        return $this->undoMarkAsRead('categories', $categoryId);
+    }
+
+    /**
+     * @param array|string $tagId
+     *
+     * @return array
+     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function undoMarkTagAsRead($tagId): array
+    {
+        return $this->undoMarkAsRead('tags', $tagId);
+    }
+
+    /**
+     * @param array|string $entryId
+     *
+     * @return array
+     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function markEntryAsSaved($entryId): array
+    {
+        return $this->markAs('markAsSaved', 'entries', $entryId);
+    }
+
+    /**
+     * @param array|string $entryId
+     *
+     * @return array
+     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function markEntryAsUnsaved($entryId): array
+    {
+        return $this->markAs('markAsUnsaved', 'entries', $entryId);
+    }
+
+    /**
+     * @param float|null $newerThan
+     *
+     * @return array
+     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function getLatestReadOperations(float $newerThan = null): array
+    {
+        return $this->httpClient->get(
+            'markers/reads',
+            ['newerThan' => $newerThan]
+        );
+    }
+
+    /**
+     * @param float|null $newerThan
+     *
+     * @return array
+     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function getLatestTaggedEntryIds(float $newerThan = null): array
+    {
+        return $this->httpClient->get(
+            'markers/tags',
+            ['newerThan' => $newerThan]
+        );
+    }
+
+    /**
      * @param string $type
+     * @param array|string $id
+     * @param null $lastRead
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function undoMarkAsRead($ids, string $type): array
+    protected function markAsRead(string $type, $id, $lastRead = null): array
     {
-        ValidationHelper::checkInArray($type, ['categories', 'feeds', 'tags']);
-
-        return $this->markAs('undoMarkAsRead', $type, $ids);
+        return $this->markAs('markAsRead', $type, $id, $lastRead);
     }
 
     /**
-     * @param string|array $entryIds
+     * @param string $type
+     * @param array|string $id
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function markEntryAsSaved($entryIds): array
+    protected function undoMarkAsRead(string $type, $id): array
     {
-        return $this->markAs('markAsSaved', 'entries', $entryIds);
-    }
-
-    /**
-     * @param string|array $entryIds
-     *
-     * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     */
-    public function markEntryAsUnsaved($entryIds): array
-    {
-        return $this->markAs('markAsUnsaved', 'entries', $entryIds);
-    }
-
-    /**
-     * @param int|null $newerThan
-     *
-     * @return array
-     * @throws \RuntimeException
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     */
-    public function getLatestReadOperations(int $newerThan = null): array
-    {
-        return $this->requestGet(
-            '/v3/markers/reads',
-            array_filter(['newerThan' => $newerThan])
-        );
-    }
-
-    /**
-     * @param int|null $newerThan
-     *
-     * @return array
-     * @throws \RuntimeException
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     */
-    public function getLatestTaggedEntryIds(int $newerThan = null): array
-    {
-        return $this->requestGet(
-            '/v3/markers/tags',
-            array_filter(['newerThan' => $newerThan])
-        );
+        return $this->markAs('undoMarkAsRead', $type, $id);
     }
 
     /**
      * @param string $action
      * @param string $type
-     * @param string|array $ids
-     * @param string|int|null $lastRead
+     * @param array|string $id
+     * @param null $lastRead
      *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     protected function markAs(
         string $action,
         string $type,
-        $ids,
+        $id,
         $lastRead = null
     ): array {
-        ValidationHelper::checkForArrayOrString($ids);
-
         $typeKey = StringHelper::toSingular($type).'Ids';
 
         $data = [
             'action' => $action,
-            'type'   => $type,
-            $typeKey => (array) $ids,
+            'type' => $type,
+            $typeKey => (array) $id,
         ];
 
         if (null !== $lastRead) {
@@ -203,6 +241,6 @@ class Marker extends AbstractResource
             }
         }
 
-        return $this->requestPost('/v3/markers', $data);
+        return $this->httpClient->post('markers', $data);
     }
 }

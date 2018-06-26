@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\FeedlyApi\Resources;
 
 use const true;
-use function array_key_exists, array_merge, urlencode;
+use function array_key_exists, array_merge;
 
 /**
  * Class Stream
@@ -19,14 +19,12 @@ class Stream extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function getListOfEntryIds(string $id, array $query = []): array
+    public function listOfEntryIds(string $id, array $query = []): array
     {
-        $id = urlencode($id);
-
-        return $this->requestGet("/v3/streams/{$id}/ids", $query);
+        return $this->httpClient->get('streams/:id:/ids', $query, ['id' => $id]);
     }
 
     /**
@@ -34,52 +32,47 @@ class Stream extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getContent(string $id, array $query = []): array
     {
-        $id = urlencode($id);
-
-        return $this->requestGet("/v3/streams/{$id}/contents", $query);
+        return $this->httpClient->get(
+            'streams/:id:/contents',
+            $query,
+            ['id' => $id]
+        );
     }
 
     /**
+     * @param string $userId
      * @param array $query
-     * @param string|null $userId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\BadStorageException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function getSaved(array $query = [], string $userId = null): array
+    public function getSaved(string $userId, array $query = []): array
     {
-        if (null === $userId) {
-            $userId = $this->client->storage('user')->getId();
-        }
-
         return $this->getContent("user/{$userId}/tag/global.saved", $query);
     }
 
     /**
+     * @param string $userId
      * @param array $query
-     * @param string|null $userId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\BadStorageException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function getAllSaved(array $query = [], string $userId = null): array
+    public function getAllSaved(string $userId, array $query = []): array
     {
         $items = [];
 
-        // If "count" not present, then we set it as 1000 for saving queries to feedly.
-        $query['count'] = $query['count'] ?? 1000;
+        $query['count'] = 1000;
 
         while (true) {
-            $data = $this->getSaved($query, $userId);
+            $data = $this->getSaved($userId, $query);
             $items[] = $data['items'];
 
             if (!array_key_exists('continuation', $data)) {

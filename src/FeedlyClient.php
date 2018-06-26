@@ -4,11 +4,11 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi;
 
-use McMatters\FeedlyApi\Exceptions\BadResourceException;
-use McMatters\FeedlyApi\Exceptions\BadStorageException;
-use McMatters\FeedlyApi\Helpers\StringHelper;
-use McMatters\FeedlyApi\Storage\UserStorage;
-use function class_exists, strtolower;
+use McMatters\FeedlyApi\Resources\{
+    Category, Entry, Feed, Marker, Mix, Preference, Profile, Search, Stream,
+    Subscription, Tag
+};
+use function ucfirst;
 
 /**
  * Class FeedlyClient
@@ -28,11 +28,6 @@ class FeedlyClient
     protected $resources = [];
 
     /**
-     * @var array
-     */
-    protected $storage = [];
-
-    /**
      * FeedlyClient constructor.
      *
      * @param string $oAuthKey
@@ -40,60 +35,111 @@ class FeedlyClient
     public function __construct(string $oAuthKey)
     {
         $this->oAuthKey = $oAuthKey;
-        $this->setStorage();
+    }
+
+    /**
+     * @return Category
+     */
+    public function category(): Category
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Entry
+     */
+    public function entry(): Entry
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Feed
+     */
+    public function feed(): Feed
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Marker
+     */
+    public function marker(): Marker
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Mix
+     */
+    public function mix(): Mix
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Preference
+     */
+    public function preference(): Preference
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Profile
+     */
+    public function profile(): Profile
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Search
+     */
+    public function search(): Search
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Stream
+     */
+    public function stream(): Stream
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Subscription
+     */
+    public function subscription(): Subscription
+    {
+        return $this->resource(__FUNCTION__);
+    }
+
+    /**
+     * @return Tag
+     */
+    public function tag(): Tag
+    {
+        return $this->resource(__FUNCTION__);
     }
 
     /**
      * @param string $name
      *
      * @return mixed
-     * @throws BadResourceException
      */
-    public function resource(string $name)
+    protected function resource(string $name)
     {
-        $lowerCaseName = strtolower($name);
+        $name = ucfirst($name);
 
-        if (isset($this->resources[$lowerCaseName])) {
-            return $this->resources[$lowerCaseName];
+        if (isset($this->resources[$name])) {
+            return $this->resources[$name];
         }
-
-        $name = StringHelper::toCamel($name);
 
         $class = __NAMESPACE__."\\Resources\\{$name}";
 
-        if (!class_exists($class)) {
-            throw new BadResourceException();
-        }
-
-        $this->resources[$lowerCaseName] = new $class($this->oAuthKey, $this);
-
-        return $this->resources[$lowerCaseName];
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     * @throws BadStorageException
-     */
-    public function storage(string $name)
-    {
-        $name = strtolower($name);
-
-        if (!isset($this->storage[$name])) {
-            throw new BadStorageException();
-        }
-
-        return $this->storage[$name];
-    }
-
-    /**
-     * @return void
-     */
-    protected function setStorage()
-    {
-        $this->storage = [
-            'user' => new UserStorage($this),
-        ];
+        return $this->resources[$name] = new $class($this->oAuthKey, $this);
     }
 }

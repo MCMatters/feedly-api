@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use function urlencode;
-
 /**
  * Class Feed
  *
@@ -17,25 +15,23 @@ class Feed extends AbstractResource
      * @param string $id
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getMetadata(string $id): array
     {
-        $id = urlencode($id);
-
-        return $this->requestGet("/v3/feeds/{$id}");
+        return $this->httpClient->get('feeds/:id:', [], ['id' => $id]);
     }
 
     /**
      * @param array $ids
      *
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getMetadataForList(array $ids): array
     {
-        return $this->requestPost('/v3/feeds/.mget', $ids);
+        return $this->httpClient->post('feeds/.mget', $ids);
     }
 }

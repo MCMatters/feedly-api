@@ -4,12 +4,6 @@ declare(strict_types = 1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use InvalidArgumentException;
-use McMatters\FeedlyApi\Helpers\{
-    ArrayHelper, StringHelper, ValidationHelper
-};
-use function urlencode;
-
 /**
  * Class Tag
  *
@@ -19,70 +13,45 @@ class Tag extends AbstractResource
 {
     /**
      * @return array
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\BadStorageException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function list(): array
     {
-        $tags = $this->requestGet('/v3/tags');
-
-        $tag = ArrayHelper::first($tags);
-        $this->client->storage('user')->setId($tag['id']);
-
-        return $tags;
+        return $this->httpClient->get('tags');
     }
 
     /**
-     * @param mixed $tag Can be either an array or a comma-separated string.
-     *
-     * @return bool
-     * @throws InvalidArgumentException
-     */
-    public function delete($tag): bool
-    {
-        ValidationHelper::checkForArrayOrString($tag);
-        $tags = urlencode(StringHelper::toCommaDelimitedString($tag));
-
-        return $this->requestDelete("/v3/tags/{$tags}");
-    }
-
-    /**
-     * @param mixed $tag Can be either an array or a comma-separated string.
-     * @param mixed $entry Can be either an array or a comma-separated string.
+     * @param array|string $tag
+     * @param array|string $entryId
      *
      * @return array
-     * @throws InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function tagEntry($tag, $entry): array
+    public function tagEntry($tag, $entryId): array
     {
-        ValidationHelper::checkForArrayOrString($tag);
-        ValidationHelper::checkForArrayOrString($entry);
-
-        $tags = urlencode(StringHelper::toCommaDelimitedString($tag));
-        $entries = StringHelper::toArrayFromString($entry);
-
-        return $this->requestPut("/v3/tags/{$tags}", ['entryIds' => $entries]);
+        return $this->httpClient->put(
+            'tags/:id:',
+            ['entryIds' => $entryId],
+            ['id' => $tag]
+        );
     }
 
     /**
-     * @param mixed $tag Can be either an array or a comma-separated string.
-     * @param mixed $entry Can be either an array or a comma-separated string.
+     * @param array|string $tag
+     * @param array|string $entryId
      *
      * @return bool
-     * @throws InvalidArgumentException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function untagEntry($tag, $entry): bool
+    public function untagEntry($tag, $entryId): bool
     {
-        ValidationHelper::checkForArrayOrString($tag);
-        ValidationHelper::checkForArrayOrString($entry);
-
-        $tags = urlencode(StringHelper::toCommaDelimitedString($tag));
-        $entries = urlencode(StringHelper::toCommaDelimitedString($entry));
-
-        return $this->requestDelete("/v3/tags/{$tags}/{$entries}");
+        return $this->httpClient->delete(
+            'tags/:id:/:entryId:',
+            [],
+            ['id' => $tag, 'entryId' => $entryId]
+        );
     }
 
     /**
@@ -90,14 +59,26 @@ class Tag extends AbstractResource
      * @param string $label
      *
      * @return array
-     * @throws InvalidArgumentException
-     * @throws \RuntimeException
      * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function changeLabel(string $id, string $label): array
     {
-        ValidationHelper::checkLabelName($label);
+        return $this->httpClient->post(
+            'tags/:id:',
+            ['label' => $label],
+            ['id' => $id]
+        );
+    }
 
-        return $this->requestPost("/v3/tags/{$id}", ['label' => $label]);
+    /**
+     * @param array|string $id
+     *
+     * @return bool
+     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
+     */
+    public function delete($id): bool
+    {
+        return $this->httpClient->delete('tags/:id:', [], ['id' => $id]);
     }
 }
