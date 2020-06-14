@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
@@ -13,8 +13,6 @@ class Preference extends AbstractResource
 {
     /**
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function get(): array
     {
@@ -25,8 +23,6 @@ class Preference extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function update(array $data): array
     {
@@ -37,8 +33,6 @@ class Preference extends AbstractResource
      * @param array|string $keys
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function delete($keys): array
     {

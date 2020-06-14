@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
@@ -15,8 +15,6 @@ class Feed extends AbstractResource
      * @param string $id
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getMetadata(string $id): array
     {
@@ -27,8 +25,6 @@ class Feed extends AbstractResource
      * @param array $ids
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getMetadataForList(array $ids): array
     {

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
@@ -13,8 +13,6 @@ class Tag extends AbstractResource
 {
     /**
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function list(): array
     {
@@ -26,8 +24,6 @@ class Tag extends AbstractResource
      * @param array|string $entryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function tagEntry($tag, $entryId): array
     {
@@ -43,7 +39,6 @@ class Tag extends AbstractResource
      * @param array|string $entryId
      *
      * @return bool
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function untagEntry($tag, $entryId): bool
     {
@@ -59,8 +54,6 @@ class Tag extends AbstractResource
      * @param string $label
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function changeLabel(string $id, string $label): array
     {
@@ -75,7 +68,6 @@ class Tag extends AbstractResource
      * @param array|string $id
      *
      * @return bool
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function delete($id): bool
     {

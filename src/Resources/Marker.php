@@ -1,12 +1,14 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
 use McMatters\FeedlyApi\Helpers\StringHelper;
-use const null;
+
 use function is_numeric;
+
+use const null;
 
 /**
  * Class Marker
@@ -19,8 +21,6 @@ class Marker extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function listOfUnreadCounts(array $query = []): array
     {
@@ -31,8 +31,6 @@ class Marker extends AbstractResource
      * @param array|string $entryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function markEntryAsRead($entryId): array
     {
@@ -43,8 +41,6 @@ class Marker extends AbstractResource
      * @param array|string $entryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function keepEntryUnread($entryId): array
     {
@@ -56,8 +52,6 @@ class Marker extends AbstractResource
      * @param string $lastReadEntryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function markFeedAsRead($feedId, string $lastReadEntryId): array
     {
@@ -69,8 +63,6 @@ class Marker extends AbstractResource
      * @param string $lastReadEntryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function markCategoryAsRead(
         $categoryId,
@@ -84,8 +76,6 @@ class Marker extends AbstractResource
      * @param string $lastReadEntryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function markTagAsRead($tagId, string $lastReadEntryId): array
     {
@@ -96,8 +86,6 @@ class Marker extends AbstractResource
      * @param array|string $feedId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function undoMarkFeedAsRead($feedId): array
     {
@@ -108,8 +96,6 @@ class Marker extends AbstractResource
      * @param array|string $categoryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function undoMarkCategoryAsRead($categoryId): array
     {
@@ -120,8 +106,6 @@ class Marker extends AbstractResource
      * @param array|string $tagId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function undoMarkTagAsRead($tagId): array
     {
@@ -132,8 +116,6 @@ class Marker extends AbstractResource
      * @param array|string $entryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function markEntryAsSaved($entryId): array
     {
@@ -144,8 +126,6 @@ class Marker extends AbstractResource
      * @param array|string $entryId
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function markEntryAsUnsaved($entryId): array
     {
@@ -156,8 +136,6 @@ class Marker extends AbstractResource
      * @param float|null $newerThan
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getLatestReadOperations(float $newerThan = null): array
     {
@@ -171,8 +149,6 @@ class Marker extends AbstractResource
      * @param float|null $newerThan
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getLatestTaggedEntryIds(float $newerThan = null): array
     {
@@ -188,8 +164,6 @@ class Marker extends AbstractResource
      * @param null $lastRead
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     protected function markAsRead(string $type, $id, $lastRead = null): array
     {
@@ -201,8 +175,6 @@ class Marker extends AbstractResource
      * @param array|string $id
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     protected function undoMarkAsRead(string $type, $id): array
     {
@@ -213,11 +185,9 @@ class Marker extends AbstractResource
      * @param string $action
      * @param string $type
      * @param array|string $id
-     * @param null $lastRead
+     * @param mixed $lastRead
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     protected function markAs(
         string $action,

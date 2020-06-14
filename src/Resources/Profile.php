@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
@@ -13,8 +13,6 @@ class Profile extends AbstractResource
 {
     /**
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function get(): array
     {
@@ -25,8 +23,6 @@ class Profile extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function update(array $data): array
     {

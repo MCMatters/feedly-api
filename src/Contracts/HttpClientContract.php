@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Contracts;
 
@@ -17,8 +17,6 @@ interface HttpClientContract
      * @param array $encodableParameters
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
      */
     public function get(
         string $uri,
@@ -32,8 +30,6 @@ interface HttpClientContract
      * @param array $encodableParameters
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
      */
     public function post(
         string $uri,
@@ -47,8 +43,6 @@ interface HttpClientContract
      * @param array $encodableParameters
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
      */
     public function put(
         string $uri,
@@ -62,6 +56,7 @@ interface HttpClientContract
      * @param array $encodableParameters
      *
      * @return bool
+     *
      * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function delete(

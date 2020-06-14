@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
@@ -15,8 +15,6 @@ class Entry extends AbstractResource
      * @param string $id
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function get(string $id): array
     {
@@ -27,8 +25,6 @@ class Entry extends AbstractResource
      * @param array $ids
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getForDynamic(array $ids): array
     {
@@ -42,8 +38,6 @@ class Entry extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function create(
         string $title,

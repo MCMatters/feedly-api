@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
@@ -13,8 +13,6 @@ class Subscription extends AbstractResource
 {
     /**
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function list(): array
     {
@@ -27,11 +25,12 @@ class Subscription extends AbstractResource
      * @param array $categories
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
-    public function create(string $feedId, string $title = null, array $categories = []): array
-    {
+    public function create(
+        string $feedId,
+        string $title = null,
+        array $categories = []
+    ): array {
         return $this->httpClient->post(
             'subscriptions',
             [
@@ -47,8 +46,6 @@ class Subscription extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function update(string $feedId, array $data = []): array
     {
@@ -63,8 +60,6 @@ class Subscription extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function updateMultiple(array $data): array
     {
@@ -75,7 +70,6 @@ class Subscription extends AbstractResource
      * @param string $id
      *
      * @return bool
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function delete(string $id): bool
     {
@@ -90,7 +84,6 @@ class Subscription extends AbstractResource
      * @param array $ids
      *
      * @return bool
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function deleteMultiple(array $ids): bool
     {

@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use const true;
 use function array_key_exists, array_merge;
+
+use const true;
 
 /**
  * Class Stream
@@ -19,8 +20,6 @@ class Stream extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function listOfEntryIds(string $id, array $query = []): array
     {
@@ -32,8 +31,6 @@ class Stream extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getContent(string $id, array $query = []): array
     {
@@ -49,8 +46,6 @@ class Stream extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getSaved(string $userId, array $query = []): array
     {
@@ -62,8 +57,6 @@ class Stream extends AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function getAllSaved(string $userId, array $query = []): array
     {

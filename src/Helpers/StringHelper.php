@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Helpers;
 
@@ -45,12 +45,10 @@ class StringHelper
         self::$pluralCache[$string] = $string;
 
         if (self::endsWith($string, 'ies')) {
-            $plural = substr($string, -3);
+            $plural = substr($string, 0, -3);
             self::$pluralCache[$string] = $plural ? "{$plural}y" : $string;
-        }
-
-        if (self::endsWith($string, 's')) {
-            $plural = substr($string, -1);
+        } elseif (self::endsWith($string, 's')) {
+            $plural = substr($string, 0, -1);
             self::$pluralCache[$string] = $plural ?: $string;
         }
 

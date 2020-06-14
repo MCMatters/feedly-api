@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
@@ -17,8 +17,6 @@ class Category extends AbstractResource
      * @param string|null $sort
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function list(string $sort = null): array
     {
@@ -30,8 +28,6 @@ class Category extends AbstractResource
      * @param string $label
      *
      * @return array
-     * @throws \McMatters\FeedlyApi\Exceptions\JsonDecodingException
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function changeLabel(string $id, string $label): array
     {
@@ -46,7 +42,6 @@ class Category extends AbstractResource
      * @param string $id
      *
      * @return bool
-     * @throws \McMatters\FeedlyApi\Exceptions\RequestException
      */
     public function delete(string $id): bool
     {

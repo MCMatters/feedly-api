@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\FeedlyApi;
 
@@ -8,7 +8,6 @@ use McMatters\FeedlyApi\Resources\{
     Category, Entry, Feed, Marker, Mix, Preference, Profile, Search, Stream,
     Subscription, Tag
 };
-use function ucfirst;
 
 /**
  * Class FeedlyClient
@@ -38,108 +37,104 @@ class FeedlyClient
     }
 
     /**
-     * @return Category
+     * @return \McMatters\FeedlyApi\Resources\Category
      */
     public function category(): Category
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Category::class);
     }
 
     /**
-     * @return Entry
+     * @return \McMatters\FeedlyApi\Resources\Entry
      */
     public function entry(): Entry
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Entry::class);
     }
 
     /**
-     * @return Feed
+     * @return \McMatters\FeedlyApi\Resources\Feed
      */
     public function feed(): Feed
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Feed::class);
     }
 
     /**
-     * @return Marker
+     * @return \McMatters\FeedlyApi\Resources\Marker
      */
     public function marker(): Marker
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Marker::class);
     }
 
     /**
-     * @return Mix
+     * @return \McMatters\FeedlyApi\Resources\Mix
      */
     public function mix(): Mix
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Mix::class);
     }
 
     /**
-     * @return Preference
+     * @return \McMatters\FeedlyApi\Resources\Preference
      */
     public function preference(): Preference
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Preference::class);
     }
 
     /**
-     * @return Profile
+     * @return \McMatters\FeedlyApi\Resources\Profile
      */
     public function profile(): Profile
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Profile::class);
     }
 
     /**
-     * @return Search
+     * @return \McMatters\FeedlyApi\Resources\Search
      */
     public function search(): Search
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Search::class);
     }
 
     /**
-     * @return Stream
+     * @return \McMatters\FeedlyApi\Resources\Stream
      */
     public function stream(): Stream
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Stream::class);
     }
 
     /**
-     * @return Subscription
+     * @return \McMatters\FeedlyApi\Resources\Subscription
      */
     public function subscription(): Subscription
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Subscription::class);
     }
 
     /**
-     * @return Tag
+     * @return \McMatters\FeedlyApi\Resources\Tag
      */
     public function tag(): Tag
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Tag::class);
     }
 
     /**
-     * @param string $name
+     * @param string $class
      *
      * @return mixed
      */
-    protected function resource(string $name)
+    protected function resource(string $class)
     {
-        $name = ucfirst($name);
-
-        if (isset($this->resources[$name])) {
-            return $this->resources[$name];
+        if (!isset($this->resources[$class])) {
+            $this->resources[$class] = new $class($this->oAuthKey, $this);
         }
 
-        $class = __NAMESPACE__."\\Resources\\{$name}";
-
-        return $this->resources[$name] = new $class($this->oAuthKey, $this);
+        return $this->resources[$class];
     }
 }
