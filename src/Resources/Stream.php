@@ -4,60 +4,32 @@ declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
-use function array_key_exists, array_merge;
+use function array_key_exists;
+use function array_merge;
 
 use const true;
 
-/**
- * Class Stream
- *
- * @package McMatters\FeedlyApi\Resources
- */
 class Stream extends AbstractResource
 {
-    /**
-     * @param string $id
-     * @param array $query
-     *
-     * @return array
-     */
     public function listOfEntryIds(string $id, array $query = []): array
     {
         return $this->httpClient->get('streams/:id:/ids', $query, ['id' => $id]);
     }
 
-    /**
-     * @param string $id
-     * @param array $query
-     *
-     * @return array
-     */
     public function getContent(string $id, array $query = []): array
     {
         return $this->httpClient->get(
             'streams/:id:/contents',
             $query,
-            ['id' => $id]
+            ['id' => $id],
         );
     }
 
-    /**
-     * @param string $userId
-     * @param array $query
-     *
-     * @return array
-     */
     public function getSaved(string $userId, array $query = []): array
     {
         return $this->getContent("user/{$userId}/tag/global.saved", $query);
     }
 
-    /**
-     * @param string $userId
-     * @param array $query
-     *
-     * @return array
-     */
     public function getAllSaved(string $userId, array $query = []): array
     {
         $items = [];

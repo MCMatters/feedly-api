@@ -4,32 +4,27 @@ declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Http;
 
-use McMatters\FeedlyApi\Contracts\HttpClientContract;
 use McMatters\Ticl\Client as HttpClient;
-use McMatters\Ticl\Enums\HttpStatusCode;
 
-use function implode, is_array, is_bool, str_replace, urlencode;
+use Throwable;
 
-/**
- * Class Client
- *
- * @package McMatters\FeedlyApi\Http
- */
-class Client implements HttpClientContract
+use function implode;
+use function is_array;
+use function is_bool;
+use function str_replace;
+use function urlencode;
+
+use const false;
+use const null;
+use const true;
+
+class Client
 {
-    /**
-     * @var \McMatters\Ticl\Client
-     */
-    protected $client;
+    protected HttpClient $httpClient;
 
-    /**
-     * Client constructor.
-     *
-     * @param string $oAuthKey
-     */
     public function __construct(string $oAuthKey)
     {
-        $this->client = new HttpClient([
+        $this->httpClient = new HttpClient([
             'base_uri' => 'https://cloud.feedly.com/v3/',
             'headers' => [
                 'Authorization' => "OAuth {$oAuthKey}",
@@ -37,99 +32,64 @@ class Client implements HttpClientContract
         ]);
     }
 
-    /**
-     * @param string $uri
-     * @param array $query
-     * @param array $encodableParameters
-     *
-     * @return array
-     */
     public function get(
         string $uri,
         array $query = [],
-        array $encodableParameters = []
+        array $encodableParameters = [],
     ): array {
-        return $this->client
-            ->get(
-                $this->buildUri($uri, $encodableParameters),
-                ['query' => $this->prepareRequestParameters($query)]
-            )
+        return $this->httpClient
+            ->withQuery($this->prepareRequestParameters($query))
+            ->get($this->buildUri($uri, $encodableParameters))
             ->json();
     }
 
-    /**
-     * @param string $uri
-     * @param array $body
-     * @param array $encodableParameters
-     *
-     * @return array
-     */
     public function post(
         string $uri,
         array $body,
-        array $encodableParameters = []
+        array $encodableParameters = [],
     ): array {
-        return $this->client
-            ->post(
-                $this->buildUri($uri, $encodableParameters),
-                ['json' => $body]
-            )
+        return $this->httpClient
+            ->withJson($body)
+            ->post($this->buildUri($uri, $encodableParameters))
             ->json();
     }
 
-    /**
-     * @param string $uri
-     * @param array $body
-     * @param array $encodableParameters
-     *
-     * @return array
-     */
     public function put(
         string $uri,
         array $body,
-        array $encodableParameters = []
+        array $encodableParameters = [],
     ): array {
-        return $this->client
-            ->put(
-                $this->buildUri($uri, $encodableParameters),
-                ['json' => $body]
-            )
+        return $this->httpClient
+            ->withJson($body)
+            ->put($this->buildUri($uri, $encodableParameters))
             ->json();
     }
 
-    /**
-     * @param string $uri
-     * @param array $options
-     * @param array $encodableParameters
-     *
-     * @return bool
-     */
     public function delete(
         string $uri,
         array $options = [],
-        array $encodableParameters = []
+        array $encodableParameters = [],
     ): bool {
-        $statusCode = $this->client
-            ->delete($this->buildUri($uri, $encodableParameters), $options)
-            ->getStatusCode();
+        try {
+            $this->httpClient->delete(
+                $this->buildUri($uri, $encodableParameters),
+                $options,
+            );
+        } catch (Throwable) {
+            return false;
+        }
 
-        return $statusCode <= HttpStatusCode::OK && $statusCode > HttpStatusCode::BAD_REQUEST;
+        return true;
     }
 
-    /**
-     * @param string $uri
-     * @param array $encodableParameters
-     *
-     * @return string
-     */
     protected function buildUri(
         string $uri,
-        array $encodableParameters = []
+        array $encodableParameters = [],
     ): string {
         foreach ($encodableParameters as $key => $replacement) {
             $replacement = is_array($replacement)
                 ? implode(',', $replacement)
-                : $replacement;
+                : (string) $replacement;
 
             $uri = str_replace(":{$key}:", urlencode($replacement), $uri);
         }
@@ -137,11 +97,6 @@ class Client implements HttpClientContract
         return $uri;
     }
 
-    /**
-     * @param array $parameters
-     *
-     * @return array
-     */
     protected function prepareRequestParameters(array $parameters = []): array
     {
         $prepared = [];
