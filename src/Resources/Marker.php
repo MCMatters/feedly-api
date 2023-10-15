@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace McMatters\FeedlyApi\Resources;
 
+use JsonException;
 use McMatters\FeedlyApi\Helpers\StringHelper;
 
 use function is_numeric;
 
+use const false;
 use const null;
+use const true;
 
 class Marker extends AbstractResource
 {
@@ -65,12 +68,12 @@ class Marker extends AbstractResource
 
     public function markEntryAsSaved(array|string $entryId): array
     {
-        return $this->markAs('markAsSaved', 'entries', $entryId);
+        return $this->markAs('markAsSaved', 'entries', $entryId, null, true);
     }
 
     public function markEntryAsUnsaved(array|string $entryId): array
     {
-        return $this->markAs('markAsUnsaved', 'entries', $entryId);
+        return $this->markAs('markAsUnsaved', 'entries', $entryId, null, true);
     }
 
     public function getLatestReadOperations(?float $newerThan = null): array
@@ -94,12 +97,12 @@ class Marker extends AbstractResource
         array|string $id,
         int|string|null $lastRead = null,
     ): array {
-        return $this->markAs('markAsRead', $type, $id, $lastRead);
+        return $this->markAs('markAsRead', $type, $id, $lastRead, true);
     }
 
     protected function undoMarkAsRead(string $type, array|string $id): array
     {
-        return $this->markAs('undoMarkAsRead', $type, $id);
+        return $this->markAs('undoMarkAsRead', $type, $id, null, true);
     }
 
     protected function markAs(
@@ -107,6 +110,7 @@ class Marker extends AbstractResource
         string $type,
         array|string $id,
         int|string|null $lastRead = null,
+        bool $hasEmptyResponse = false,
     ): array {
         $typeKey = StringHelper::toSingular($type).'Ids';
 
@@ -124,6 +128,14 @@ class Marker extends AbstractResource
             }
         }
 
-        return $this->httpClient->post('markers', $data);
+        try {
+            return $this->httpClient->post('markers', $data);
+        } catch (JsonException $exception) {
+            if (!$hasEmptyResponse) {
+                throw $exception;
+            }
+
+            return [];
+        }
     }
 }
