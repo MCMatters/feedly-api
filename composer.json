@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=8.0",
-        "mcmatters/ticl": "dev-master"
+        "mcmatters/ticl": "*"
     },
     "autoload": {
         "psr-4": {
